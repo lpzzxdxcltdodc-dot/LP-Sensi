@@ -1,0 +1,21 @@
+{
+  "short_name": "LP Sensi",
+  "name": "POCO X6 Sensi Master",
+  "icons": [
+    {
+      "src": "https://placehold.co/192x192/050505/FF6600.png?text=LP",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "https://placehold.co/512x512/050505/FF6600.png?text=LP",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#050505",
+  "background_color": "#050505",
+  "orientation": "portrait"
+}

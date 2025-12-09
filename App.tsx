@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { generateSensi } from './services/geminiService';
 import { PlayStyle, SensitivityProfile, TabView } from './types';
 import { SensiCard } from './components/SensiCard';
 import { DpiCalculator } from './components/DpiCalculator';
 import { GuideSection } from './components/GuideSection';
-import { Crosshair, Zap, Cpu, Settings, RefreshCw, AlertTriangle, Calculator, BookOpen, Layers } from 'lucide-react';
+import { Crosshair, Zap, Cpu, Settings, RefreshCw, AlertTriangle, Calculator, BookOpen, Layers, Download } from 'lucide-react';
 
 // LP Sensi Presets
 const PRESETS: Record<string, SensitivityProfile> = {
@@ -63,6 +63,25 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [userNote, setUserNote] = useState("");
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+
+  useEffect(() => {
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    });
+  }, []);
+
+  const handleInstallClick = () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((choiceResult: any) => {
+        if (choiceResult.outcome === 'accepted') {
+          setDeferredPrompt(null);
+        }
+      });
+    }
+  };
 
   const handleGenerate = async () => {
     setLoading(true);
@@ -98,9 +117,18 @@ const App: React.FC = () => {
           <h1 className="text-4xl md:text-6xl font-black italic tracking-tighter uppercase mb-2">
             Sensi <span className="text-transparent bg-clip-text bg-gradient-to-r from-ff-yellow to-ff-orange">Master</span>
           </h1>
-          <p className="text-gray-400 max-w-lg mx-auto font-mono text-sm md:text-base">
+          <p className="text-gray-400 max-w-lg mx-auto font-mono text-sm md:text-base mb-4">
             Guia definitivo de sensibilidade (0-200), DPI e otimização para POCO X6.
           </p>
+
+          {deferredPrompt && (
+            <button 
+              onClick={handleInstallClick}
+              className="flex items-center gap-2 bg-ff-orange text-black px-6 py-2 rounded-full font-bold uppercase text-xs tracking-widest hover:bg-white transition-all shadow-[0_0_20px_rgba(255,102,0,0.4)] animate-pulse"
+            >
+              <Download size={16} /> Instalar App
+            </button>
+          )}
         </div>
       </header>
 
